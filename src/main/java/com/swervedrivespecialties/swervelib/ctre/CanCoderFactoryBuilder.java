@@ -48,6 +48,9 @@ public class CanCoderFactoryBuilder {
         @Override
         public double getAbsoluteAngle() {
             double angle = Math.toRadians(encoder.getAbsolutePosition());
+
+            CtreUtils.checkCtreError(encoder.getLastError(), "Failed to retrieve CANcoder "+encoder.getDeviceID()+" absolute position");
+
             angle %= 2.0 * Math.PI;
             if (angle < 0.0) {
                 angle += 2.0 * Math.PI;
