@@ -18,7 +18,9 @@ public final class Mk4SwerveModuleHelper {
     private static SteerControllerFactory<?, SteerConfiguration<CanCoderAbsoluteConfiguration>> getFalcon500SteerFactory(Mk4ModuleConfiguration configuration) {
         return new Falcon500SteerControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
-                .withPidConstants(0.2, 0.0, 0.1)
+                .withPidConstants(configuration.getSteerKP(), configuration.getSteerKI(), configuration.getSteerKD())
+                .withMotionMagic(configuration.getSteerMMkV(), configuration.getSteerMMkA(),
+                        configuration.getSteerMMkS())
                 .withCurrentLimit(configuration.getSteerCurrentLimit())
                 .build(new CanCoderFactoryBuilder()
                         .withReadingUpdatePeriod(100)
@@ -35,7 +37,7 @@ public final class Mk4SwerveModuleHelper {
     private static SteerControllerFactory<?, SteerConfiguration<CanCoderAbsoluteConfiguration>> getNeoSteerFactory(Mk4ModuleConfiguration configuration) {
         return new NeoSteerControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
-                .withPidConstants(1.0, 0.0, 0.1)
+                .withPidConstants(configuration.getSteerKP(), configuration.getSteerKI(), configuration.getSteerKD())
                 .withCurrentLimit(configuration.getSteerCurrentLimit())
                 .build(new CanCoderFactoryBuilder()
                         .withReadingUpdatePeriod(100)
@@ -144,7 +146,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, driveCanbus, steerMotorPort, steerCanbus, steerEncoderPort, steerOffset);
+        return createFalcon500(container, Mk4ModuleConfiguration.getDefaultSteerFalcon500(), gearRatio, driveMotorPort, driveCanbus, steerMotorPort, steerCanbus, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -167,7 +169,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createFalcon500(container, Mk4ModuleConfiguration.getDefaultSteerFalcon500(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -261,7 +263,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, driveCanbus, steerMotorPort, steerCanbus, steerEncoderPort, steerOffset);
+        return createFalcon500(Mk4ModuleConfiguration.getDefaultSteerFalcon500(), gearRatio, driveMotorPort, driveCanbus, steerMotorPort, steerCanbus, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -281,7 +283,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createFalcon500(Mk4ModuleConfiguration.getDefaultSteerFalcon500(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -340,7 +342,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createNeo(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createNeo(container, Mk4ModuleConfiguration.getDefaultSteerNEO(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -392,7 +394,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createNeo(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createNeo(Mk4ModuleConfiguration.getDefaultSteerNEO(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -493,7 +495,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500Neo(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, driveCanbus, steerMotorPort, steerEncoderPort, steerOffset);
+        return createFalcon500Neo(container, Mk4ModuleConfiguration.getDefaultSteerNEO(), gearRatio, driveMotorPort, driveCanbus, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -516,7 +518,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500Neo(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createFalcon500Neo(container, Mk4ModuleConfiguration.getDefaultSteerNEO(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -606,7 +608,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500Neo(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, driveCanbus, steerMotorPort, steerEncoderPort, steerOffset);
+        return createFalcon500Neo(Mk4ModuleConfiguration.getDefaultSteerNEO(), gearRatio, driveMotorPort, driveCanbus, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -626,7 +628,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createFalcon500Neo(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createFalcon500Neo(Mk4ModuleConfiguration.getDefaultSteerNEO(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -727,7 +729,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createNeoFalcon500(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerCanbus, steerEncoderPort, steerOffset);
+        return createNeoFalcon500(container, Mk4ModuleConfiguration.getDefaultSteerFalcon500(), gearRatio, driveMotorPort, steerMotorPort, steerCanbus, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -750,7 +752,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createNeoFalcon500(container, new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createNeoFalcon500(container, Mk4ModuleConfiguration.getDefaultSteerFalcon500(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -840,7 +842,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createNeoFalcon500(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerCanbus, steerEncoderPort, steerOffset);
+        return createNeoFalcon500(Mk4ModuleConfiguration.getDefaultSteerFalcon500(), gearRatio, driveMotorPort, steerMotorPort, steerCanbus, steerEncoderPort, steerOffset);
     }
 
     /**
@@ -860,7 +862,7 @@ public final class Mk4SwerveModuleHelper {
             int steerEncoderPort,
             double steerOffset
     ) {
-        return createNeoFalcon500(new Mk4ModuleConfiguration(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
+        return createNeoFalcon500(Mk4ModuleConfiguration.getDefaultSteerFalcon500(), gearRatio, driveMotorPort, steerMotorPort, steerEncoderPort, steerOffset);
     }
 
     public enum GearRatio {
