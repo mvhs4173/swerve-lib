@@ -56,6 +56,9 @@ public class CanCoderFactoryBuilder {
 
             for (int i = 0; i < ATTEMPTS; i++) {
                 if (code == ErrorCode.OK) break;
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) { }
                 angle = Math.toRadians(encoder.getAbsolutePosition());
                 code = encoder.getLastError();
             }
