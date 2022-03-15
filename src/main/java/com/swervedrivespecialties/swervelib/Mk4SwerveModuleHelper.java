@@ -4,6 +4,9 @@ import com.swervedrivespecialties.swervelib.ctre.*;
 import com.swervedrivespecialties.swervelib.rev.*;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 
+/**
+ * For CANcoder canbus specifying, use {@link Mk4SwerveModuleBuilder} instead.
+ */
 public final class Mk4SwerveModuleHelper {
     private Mk4SwerveModuleHelper() {
     }

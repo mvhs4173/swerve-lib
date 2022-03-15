@@ -73,6 +73,7 @@ public class Mk4SwerveModuleBuilder {
     private MotorType steerMotorType;
     private int steerEncoderPort = -1;
     private double steerOffset = 0;
+    private String steerEncoderCanbus = "";
 
     public Mk4SwerveModuleBuilder() {
         this.configuration = new Mk4ModuleConfiguration();
@@ -133,9 +134,14 @@ public class Mk4SwerveModuleBuilder {
         return this.withSteerMotor(motorType, motorPort, "");
     }
 
-    public Mk4SwerveModuleBuilder withSteerEncoderPort(int encoderPort) {
+    public Mk4SwerveModuleBuilder withSteerEncoderPort(int encoderPort, String canbus) {
         this.steerEncoderPort = encoderPort;
+        this.steerEncoderCanbus = canbus;
         return this;
+    }
+
+    public Mk4SwerveModuleBuilder withSteerEncoderPort(int encoderPort) {
+        return this.withSteerEncoderPort(encoderPort, "");
     }
 
     public Mk4SwerveModuleBuilder withSteerOffset(double offset) {
@@ -181,7 +187,8 @@ public class Mk4SwerveModuleBuilder {
                     steerMotorPort, 
                     new CanCoderAbsoluteConfiguration(
                             steerEncoderPort, 
-                            steerOffset
+                            steerOffset,
+                            steerEncoderCanbus
                     )
             );
         } else if (steerMotorType == MotorType.NEO) {
@@ -189,7 +196,8 @@ public class Mk4SwerveModuleBuilder {
                     steerMotorPort, 
                     new CanCoderAbsoluteConfiguration(
                             steerEncoderPort, 
-                            steerOffset
+                            steerOffset,
+                            steerEncoderCanbus
                     )
             );
         } else {
