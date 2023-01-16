@@ -5,66 +5,47 @@ import com.swervedrivespecialties.swervelib.rev.*;
 
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 
-/**
- * @deprecated use {@link MkSwerveModuleBuilder} instead, which provides support for CANivores.
- */
-@Deprecated(since = "2023.1.2.0", forRemoval = true)
-public class Mk4SwerveModuleBuilder {
+public class MkSwerveModuleBuilder {
 
-    public enum GearRatio {
-        L1(SdsModuleConfigurations.MK4_L1),
-        L2(SdsModuleConfigurations.MK4_L2),
-        L3(SdsModuleConfigurations.MK4_L3),
-        L4(SdsModuleConfigurations.MK4_L4);
-
-        private final MechanicalConfiguration configuration;
-
-        GearRatio(MechanicalConfiguration configuration) {
-            this.configuration = configuration;
-        }
-
-        public MechanicalConfiguration getConfiguration() {
-            return configuration;
-        }
-    }
-
-    private static DriveControllerFactory<?, Integer> getFalcon500DriveFactory(Mk4ModuleConfiguration configuration) {
+    private static DriveControllerFactory<?, Integer> getFalcon500DriveFactory(MkModuleConfiguration configuration) {
         return new Falcon500DriveControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
                 .withCurrentLimit(configuration.getDriveCurrentLimit())
                 .build();
     }
 
-    private static SteerControllerFactory<?, SteerConfiguration<CanCoderAbsoluteConfiguration>> getFalcon500SteerFactory(Mk4ModuleConfiguration configuration) {
+    private static SteerControllerFactory<?, SteerConfiguration<CanCoderAbsoluteConfiguration>> getFalcon500SteerFactory(MkModuleConfiguration configuration) {
         return new Falcon500SteerControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
-                .withPidConstants(0.2, 0.0, 0.1)
+                .withPidConstants(configuration.getSteerKP(), configuration.getSteerKI(), configuration.getSteerKD())
+                .withMotionMagic(configuration.getSteerMMkV(), configuration.getSteerMMkA(),
+                        configuration.getSteerMMkS())
                 .withCurrentLimit(configuration.getSteerCurrentLimit())
                 .build(new CanCoderFactoryBuilder()
                         .withReadingUpdatePeriod(100)
                         .build());
     }
 
-    private static DriveControllerFactory<?, Integer> getNeoDriveFactory(Mk4ModuleConfiguration configuration) {
+    private static DriveControllerFactory<?, Integer> getNeoDriveFactory(MkModuleConfiguration configuration) {
         return new NeoDriveControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
                 .withCurrentLimit(configuration.getDriveCurrentLimit())
                 .build();
     }
 
-    private static SteerControllerFactory<?, SteerConfiguration<CanCoderAbsoluteConfiguration>> getNeoSteerFactory(Mk4ModuleConfiguration configuration) {
+    private static SteerControllerFactory<?, SteerConfiguration<CanCoderAbsoluteConfiguration>> getNeoSteerFactory(MkModuleConfiguration configuration) {
         return new NeoSteerControllerFactoryBuilder()
                 .withVoltageCompensation(configuration.getNominalVoltage())
-                .withPidConstants(1.0, 0.0, 0.1)
+                .withPidConstants(configuration.getSteerKP(), configuration.getSteerKI(), configuration.getSteerKD())
                 .withCurrentLimit(configuration.getSteerCurrentLimit())
                 .build(new CanCoderFactoryBuilder()
                         .withReadingUpdatePeriod(100)
                         .build());
     }
 
-    private final Mk4ModuleConfiguration configuration;
+    private final MkModuleConfiguration configuration;
     private ShuffleboardLayout container = null;
-    private GearRatio gearRatio = null;
+    private MechanicalConfiguration mechConfig = null;
 
     private DriveControllerFactory<?, Integer> driveFactory = null;
     private SteerControllerFactory<?, SteerConfiguration<CanCoderAbsoluteConfiguration>> steerFactory = null;
@@ -79,25 +60,25 @@ public class Mk4SwerveModuleBuilder {
     private double steerOffset = 0;
     private String steerEncoderCanbus = "";
 
-    public Mk4SwerveModuleBuilder() {
-        this.configuration = new Mk4ModuleConfiguration();
+    public MkSwerveModuleBuilder() {
+        this.configuration = new MkModuleConfiguration();
     }
 
-    public Mk4SwerveModuleBuilder(Mk4ModuleConfiguration configuration) {
+    public MkSwerveModuleBuilder(MkModuleConfiguration configuration) {
         this.configuration = configuration;
     }
 
-    public Mk4SwerveModuleBuilder withLayout(ShuffleboardLayout container) {
+    public MkSwerveModuleBuilder withLayout(ShuffleboardLayout container) {
         this.container = container;
         return this;
     }
 
-    public Mk4SwerveModuleBuilder withGearRatio(GearRatio gearRatio) {
-        this.gearRatio = gearRatio;
+    public MkSwerveModuleBuilder withGearRatio(MechanicalConfiguration mechConfig) {
+        this.mechConfig = mechConfig;
         return this;
     }
 
-    public Mk4SwerveModuleBuilder withDriveMotor(MotorType motorType, int motorPort, String motorCanbus) {
+    public MkSwerveModuleBuilder withDriveMotor(MotorType motorType, int motorPort, String motorCanbus) {
         switch (motorType) {
             case FALCON:
                 this.driveFactory = getFalcon500DriveFactory(this.configuration);
@@ -113,11 +94,11 @@ public class Mk4SwerveModuleBuilder {
         return this;
     }
 
-    public Mk4SwerveModuleBuilder withDriveMotor(MotorType motorType, int motorPort) {
+    public MkSwerveModuleBuilder withDriveMotor(MotorType motorType, int motorPort) {
         return this.withDriveMotor(motorType, motorPort, "");
     }
 
-    public Mk4SwerveModuleBuilder withSteerMotor(MotorType motorType, int motorPort, String motorCanbus) {
+    public MkSwerveModuleBuilder withSteerMotor(MotorType motorType, int motorPort, String motorCanbus) {
         switch (motorType) {
             case FALCON:
                 this.steerFactory = getFalcon500SteerFactory(this.configuration);
@@ -134,28 +115,28 @@ public class Mk4SwerveModuleBuilder {
         return this;
     }
 
-    public Mk4SwerveModuleBuilder withSteerMotor(MotorType motorType, int motorPort) {
+    public MkSwerveModuleBuilder withSteerMotor(MotorType motorType, int motorPort) {
         return this.withSteerMotor(motorType, motorPort, "");
     }
 
-    public Mk4SwerveModuleBuilder withSteerEncoderPort(int encoderPort, String canbus) {
+    public MkSwerveModuleBuilder withSteerEncoderPort(int encoderPort, String canbus) {
         this.steerEncoderPort = encoderPort;
         this.steerEncoderCanbus = canbus;
         return this;
     }
 
-    public Mk4SwerveModuleBuilder withSteerEncoderPort(int encoderPort) {
+    public MkSwerveModuleBuilder withSteerEncoderPort(int encoderPort) {
         return this.withSteerEncoderPort(encoderPort, "");
     }
 
-    public Mk4SwerveModuleBuilder withSteerOffset(double offset) {
+    public MkSwerveModuleBuilder withSteerOffset(double offset) {
         this.steerOffset = offset;
         return this;
     }
 
     public SwerveModule build() {
-        if (gearRatio == null) {
-            throw new RuntimeException("Gear Ratio should not be null!");
+        if (mechConfig == null) {
+            throw new RuntimeException("Mechanical Config should not be null!");
         }
 
         if (driveFactory == null) {
@@ -179,7 +160,7 @@ public class Mk4SwerveModuleBuilder {
         }
 
         SwerveModuleFactory<Integer, SteerConfiguration<CanCoderAbsoluteConfiguration>> factory = new SwerveModuleFactory<>(
-                gearRatio.getConfiguration(), 
+                mechConfig, 
                 driveFactory, 
                 steerFactory
         );
