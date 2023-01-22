@@ -44,6 +44,7 @@ public class MkSwerveModuleBuilder {
     }
 
     private final MkModuleConfiguration configuration;
+    private final boolean useDefaultSteerConfiguration;
     private ShuffleboardLayout container = null;
     private MechanicalConfiguration mechConfig = null;
 
@@ -60,12 +61,27 @@ public class MkSwerveModuleBuilder {
     private double steerOffset = 0;
     private String steerEncoderCanbus = "";
 
+    /**
+     * Creates a new swerve module builder with the default values.
+     */
     public MkSwerveModuleBuilder() {
         this.configuration = new MkModuleConfiguration();
+        this.useDefaultSteerConfiguration = true;
     }
 
+    /**
+     * Creates a new swerve module builder.
+     * <p>
+     * Recommended values to pass in are
+     * {@link MkModuleConfiguration#getDefaultSteerFalcon500()} or
+     * {@link MkModuleConfiguration#getDefaultSteerNEO()}, but you can use any custom module
+     * values by instantiating a new {@link MkModuleConfiguration}.
+     * 
+     * @param configuration configured values for the module
+     */
     public MkSwerveModuleBuilder(MkModuleConfiguration configuration) {
         this.configuration = configuration;
+        this.useDefaultSteerConfiguration = false;
     }
 
     public MkSwerveModuleBuilder withLayout(ShuffleboardLayout container) {
@@ -101,10 +117,16 @@ public class MkSwerveModuleBuilder {
     public MkSwerveModuleBuilder withSteerMotor(MotorType motorType, int motorPort, String motorCanbus) {
         switch (motorType) {
             case FALCON:
-                this.steerFactory = getFalcon500SteerFactory(this.configuration);
+                if (this.useDefaultSteerConfiguration)
+                    this.steerFactory = getFalcon500SteerFactory(MkModuleConfiguration.getDefaultSteerFalcon500());
+                else
+                    this.steerFactory = getFalcon500SteerFactory(this.configuration);
                 break;
             case NEO:
-                this.steerFactory = getNeoSteerFactory(this.configuration);
+                if (this.useDefaultSteerConfiguration)
+                    this.steerFactory = getNeoSteerFactory(MkModuleConfiguration.getDefaultSteerNEO());
+                else
+                    this.steerFactory = getNeoSteerFactory(this.configuration);
                 break;
             default:
                 break;
