@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerControllerFactoryBuilder;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-    private static final double MAX_VOLTAGE = 3.0; //was 12
+    private static final double MAX_VOLTAGE = 1.0; //was 12
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.1528; //was 4.1528
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
             Math.hypot(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
@@ -44,7 +44,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     );
     private final SwerveDriveOdometry odometry;
 
-    private ChassisSpeeds chassisSpeeds = new ChassisSpeeds(Math.cos(getRotation().getDegrees()), Math.sin(getRotation().getDegrees()), 0.0);
+    private ChassisSpeeds chassisSpeeds;
 
     public DrivetrainSubsystem() {
         ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Drivetrain");
@@ -98,7 +98,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 Rotation2d.fromDegrees(gyroscope.getYaw()),
                 new SwerveModulePosition[]{ frontLeftModule.getPosition(), frontRightModule.getPosition(), backLeftModule.getPosition(), backRightModule.getPosition() }
         );
-
+        chassisSpeeds = new ChassisSpeeds(Math.cos(getRotation().getDegrees()), Math.sin(getRotation().getDegrees()), 0.0);
         shuffleboardTab.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
         shuffleboardTab.addNumber("Pigeon Yaw Angle", () -> gyroscope.getYaw());
         shuffleboardTab.addNumber("Pose X", () -> odometry.getPoseMeters().getX());
