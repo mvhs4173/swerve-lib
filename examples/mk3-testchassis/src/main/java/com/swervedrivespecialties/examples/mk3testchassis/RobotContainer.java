@@ -2,15 +2,18 @@ package com.swervedrivespecialties.examples.mk3testchassis;
 
 import com.swervedrivespecialties.examples.mk3testchassis.commands.DriveCommand;
 import com.swervedrivespecialties.examples.mk3testchassis.commands.TurnSteerMotors;
+import com.swervedrivespecialties.examples.mk3testchassis.subsystems.ArmSubsystem;
 import com.swervedrivespecialties.examples.mk3testchassis.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import com.swervedrivespecialties.examples.mk3testchassis.commands.SetArmLength;
 
 public class RobotContainer {
     private final DrivetrainSubsystem drivetrain = new DrivetrainSubsystem();
+    private final ArmSubsystem arm = new ArmSubsystem();
     private final XboxController controller = new XboxController(0);
 
     public RobotContainer() {
@@ -30,6 +33,10 @@ public class RobotContainer {
 
         Trigger rightBumperButton = new JoystickButton(controller, XboxController.Button.kRightBumper.value);
         rightBumperButton.whileTrue(new TurnSteerMotors(drivetrain));
+        
+        Trigger xButton = new JoystickButton(controller, XboxController.Button.kX.value);
+        xButton.whileTrue(new SetArmLength(arm, 5));
+        
     }
 
     public DrivetrainSubsystem getDrivetrain() {
