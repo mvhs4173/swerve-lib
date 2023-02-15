@@ -15,19 +15,34 @@ public class ArmSubsystem extends SubsystemBase {
   private CANSparkMax m_motor;
   private SparkMaxPIDController m_pidController;
   private RelativeEncoder m_encoder;
+  private double m_zeroPos; 
+  private double m_inchPerRot = Math.PI * d; //TODO: Replace d with actual diameter of motor spindle
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     m_motor = new CANSparkMax(Constants.CLIMBER_ID, MotorType.kBrushless);
     m_encoder = m_motor.getEncoder();
+    setZero();
   }
 
-  public void goToPositionInches() {
-
+  public void goToPositionInches(double distance) {
+    m_encoder.setPosition(inchesToRotations(distance) - m_zeroPos);
   }
 
   public void setZero() {
-    m_encoder.getPosition();
+    m_zeroPos = m_encoder.getPosition();
+  }
+
+  public double getPositionInches() {
+    return rotationsToInches(m_encoder.getPosition());
+  }
+
+  private double rotationsToInches(double rotations) {
+    return rotations * m_inchPerRot;
+  }
+
+  private double inchesToRotations(double inches) {
+    return inches / m_inchPerRot;
   }
 
   @Override
