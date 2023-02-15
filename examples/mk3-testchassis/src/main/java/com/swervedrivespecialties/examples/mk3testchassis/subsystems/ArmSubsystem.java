@@ -16,7 +16,7 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkMaxPIDController m_pidController;
   private RelativeEncoder m_encoder;
   private double m_zeroPos; 
-  private double m_inchPerRot = Math.PI * d; //TODO: Replace d with actual diameter of motor spindle
+  private double m_inchPerRot = Math.PI * 0.75;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
