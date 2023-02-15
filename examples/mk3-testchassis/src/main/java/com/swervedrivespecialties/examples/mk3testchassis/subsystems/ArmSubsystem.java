@@ -17,9 +17,17 @@ public class ArmSubsystem extends SubsystemBase {
   private RelativeEncoder m_encoder;
   private double m_zeroPos; 
   private double m_inchPerRot = Math.PI * 0.75;
+  public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
+    kP = 0.01; kI = 0; kD = 1; kIz = 0; kFF = 0; kMaxOutput = 1; kMinOutput = -1; // PID parameters
+    m_pidController.setP(kP);
+    m_pidController.setI(kI);
+    m_pidController.setD(kD);
+    m_pidController.setIZone(kIz);
+    m_pidController.setFF(kFF);
+    m_pidController.setOutputRange(kMinOutput, kMaxOutput);  
     m_motor = new CANSparkMax(Constants.CLIMBER_ID, MotorType.kBrushless);
     m_encoder = m_motor.getEncoder();
     setZero();
