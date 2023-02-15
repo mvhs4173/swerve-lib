@@ -24,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.swervedrivespecialties.swervelib.ctre.Falcon500SteerControllerFactoryBuilder;
 
 public class DrivetrainSubsystem extends SubsystemBase {
-    private static final double MAX_VOLTAGE = 1.0; //was 12
+    private static final double MAX_VOLTAGE = 3.0; //was 12
     public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.1528; //was 4.1528
     public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
             Math.hypot(Constants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, Constants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
@@ -53,7 +53,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 .withLayout(shuffleboardTab.getLayout("Front Left Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(0, 0))
-                .withGearRatio(SdsModuleConfigurations.MK3_STANDARD)
+                .withGearRatio(SdsModuleConfigurations.MK4I_L2)
                 .withDriveMotor(MotorType.FALCON, Constants.FRONT_LEFT_MODULE_DRIVE_MOTOR)
                 .withSteerMotor(MotorType.FALCON, Constants.FRONT_LEFT_MODULE_STEER_MOTOR)
                 .withSteerEncoderPort(Constants.FRONT_LEFT_MODULE_STEER_ENCODER)
@@ -64,29 +64,31 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 .withLayout(shuffleboardTab.getLayout("Front Right Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(2, 0))
-                .withGearRatio(SdsModuleConfigurations.MK3_STANDARD)
+                .withGearRatio(SdsModuleConfigurations.MK4I_L2)
                 .withDriveMotor(MotorType.FALCON, Constants.FRONT_RIGHT_MODULE_DRIVE_MOTOR)
                 .withSteerMotor(MotorType.FALCON, Constants.FRONT_RIGHT_MODULE_STEER_MOTOR)
                 .withSteerEncoderPort(Constants.FRONT_RIGHT_MODULE_STEER_ENCODER)
                 .withSteerOffset(Constants.FRONT_RIGHT_MODULE_STEER_OFFSET)
                 .build();
+                System.out.println("##%%923948I^6*@*($^*()@& i'M constructing frontRightModule!! " + Math.toDegrees(Constants.FRONT_RIGHT_MODULE_STEER_OFFSET));
 
         backLeftModule = new MkSwerveModuleBuilder()
                 .withLayout(shuffleboardTab.getLayout("Back Left Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(4, 0))
-                .withGearRatio(SdsModuleConfigurations.MK3_STANDARD)
+                .withGearRatio(SdsModuleConfigurations.MK4I_L2)
                 .withDriveMotor(MotorType.FALCON, Constants.BACK_LEFT_MODULE_DRIVE_MOTOR)
                 .withSteerMotor(MotorType.FALCON, Constants.BACK_LEFT_MODULE_STEER_MOTOR)
                 .withSteerEncoderPort(Constants.BACK_LEFT_MODULE_STEER_ENCODER)
                 .withSteerOffset(Constants.BACK_LEFT_MODULE_STEER_OFFSET)
                 .build();
+                System.out.println("##%%923948I^6*@*($^*()@& i'M constructing backLeftModule!! " + Math.toDegrees(Constants.BACK_LEFT_MODULE_STEER_OFFSET));
 
         backRightModule = new MkSwerveModuleBuilder()
                 .withLayout(shuffleboardTab.getLayout("Back Right Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(6, 0))
-                .withGearRatio(SdsModuleConfigurations.MK3_STANDARD)
+                .withGearRatio(SdsModuleConfigurations.MK4I_L2)
                 .withDriveMotor(MotorType.FALCON, Constants.BACK_RIGHT_MODULE_DRIVE_MOTOR)
                 .withSteerMotor(MotorType.FALCON, Constants.BACK_RIGHT_MODULE_STEER_MOTOR)
                 .withSteerEncoderPort(Constants.BACK_RIGHT_MODULE_STEER_ENCODER)
@@ -98,7 +100,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 Rotation2d.fromDegrees(gyroscope.getYaw()),
                 new SwerveModulePosition[]{ frontLeftModule.getPosition(), frontRightModule.getPosition(), backLeftModule.getPosition(), backRightModule.getPosition() }
         );
-        chassisSpeeds = new ChassisSpeeds(Math.cos(getRotation().getDegrees()), Math.sin(getRotation().getDegrees()), 0.0);
+        chassisSpeeds = new ChassisSpeeds(0, 0, 0.0);
         shuffleboardTab.addNumber("Gyroscope Angle", () -> getRotation().getDegrees());
         shuffleboardTab.addNumber("Pigeon Yaw Angle", () -> gyroscope.getYaw());
         shuffleboardTab.addNumber("Pose X", () -> odometry.getPoseMeters().getX());
