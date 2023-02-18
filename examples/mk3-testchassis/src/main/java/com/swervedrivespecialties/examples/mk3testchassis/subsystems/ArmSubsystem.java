@@ -16,11 +16,15 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkMaxPIDController m_pidController;
   private RelativeEncoder m_encoder;
   private double m_zeroPos; 
+  private final int gearRatio = 36;
+  private double rotationsToGo;
   private double m_inchPerRot = Math.PI * 0.75;
   public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput;
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
+    m_motor = new CANSparkMax(Constants.CLIMBER_ID, MotorType.kBrushless);
+    m_pidController = m_motor.getPIDController();
     kP = 0.01; kI = 0; kD = 1; kIz = 0; kFF = 0; kMaxOutput = 1; kMinOutput = -1; // PID parameters
     m_pidController.setP(kP);
     m_pidController.setI(kI);
@@ -28,13 +32,15 @@ public class ArmSubsystem extends SubsystemBase {
     m_pidController.setIZone(kIz);
     m_pidController.setFF(kFF);
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);  
-    m_motor = new CANSparkMax(Constants.CLIMBER_ID, MotorType.kBrushless);
     m_encoder = m_motor.getEncoder();
     setZero();
   }
 
   public void goToPositionInches(double distance) {
-    m_encoder.setPosition(inchesToRotations(distance) - m_zeroPos);
+    // m_encoder.setPosition(inchesToRotations(distance) - m_zeroPos);
+    rotationsToGo = inchesToRotations(distance) - m_zeroPos;
+    m_pidController.setReference(rotationsToGo, CANSparkMax.ControlType.kPosition);
+    System.out.println("////////// zeroPos: " + m_zeroPos + "rotationsToGo: " + rotationsToGo);
   }
 
   public void setZero() {
@@ -46,11 +52,11 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private double rotationsToInches(double rotations) {
-    return rotations * m_inchPerRot;
+    return (rotations * m_inchPerRot) / gearRatio;
   }
 
   private double inchesToRotations(double inches) {
-    return inches / m_inchPerRot;
+    return inches / m_inchPerRot * gearRatio;
   }
 
   @Override

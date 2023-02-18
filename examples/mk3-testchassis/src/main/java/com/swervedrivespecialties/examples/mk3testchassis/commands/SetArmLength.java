@@ -14,8 +14,9 @@ public class SetArmLength extends CommandBase {
   private int m_counter = 0;
   /** Creates a new SetArmLength. */
   public SetArmLength(ArmSubsystem arm, double distance) {
+    System.out.println("////////// Creating arm, distance = " + distance + "//////////////");
     m_arm = arm;
-    m_distance = distance;
+    m_distance = -distance;
     addRequirements(m_arm);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -23,12 +24,15 @@ public class SetArmLength extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("///////////// Initializing, m_distance = " + m_distance + "//////////////");
     m_arm.goToPositionInches(m_distance);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    //System.out.println("/////////// Executing, m_distance = " + m_distance + "////////////////");
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -38,12 +42,15 @@ public class SetArmLength extends CommandBase {
   @Override
   public boolean isFinished() {
       boolean isClose = (Math.abs(m_arm.getPositionInches() - m_distance) < m_ArmTolerance);
+      // System.out.println("////////////// isFinished, arm position in inches = " + m_arm.getPositionInches() + "//////////////");
       if (isClose) {
         m_counter++;
       }
       else {
         m_counter = 0;
       }
-    return (m_counter >= 5);
+      boolean isDone = m_counter >= 500;
+      System.out.println("" + isDone + ", " + m_counter);
+    return (isDone);
   }
 }
