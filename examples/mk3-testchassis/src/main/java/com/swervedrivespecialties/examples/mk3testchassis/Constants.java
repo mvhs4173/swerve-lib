@@ -27,4 +27,5 @@ public class Constants {
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(52.03);
 
     public static final int CLIMBER_ID = 55;
+    public static final int CLIMBER_PIVOT_ID = 53;
 }

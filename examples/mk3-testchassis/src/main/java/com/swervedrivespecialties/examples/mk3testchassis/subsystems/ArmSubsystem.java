@@ -13,9 +13,13 @@ import com.swervedrivespecialties.examples.mk3testchassis.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
   private CANSparkMax m_motor;
+  private CANSparkMax pivot_motor;
   private SparkMaxPIDController m_pidController;
+  private SparkMaxPIDController pivot_pidController;
   private RelativeEncoder m_encoder;
+  private RelativeEncoder pivot_encoder;
   private double m_zeroPos; 
+  private double pivot_zeroPos;
   private final int gearRatio = 36;
   private double rotationsToGo;
   private double m_inchPerRot = Math.PI * 0.75;
@@ -24,7 +28,9 @@ public class ArmSubsystem extends SubsystemBase {
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
     m_motor = new CANSparkMax(Constants.CLIMBER_ID, MotorType.kBrushless);
+    pivot_motor = new CANSparkMax(Constants.CLIMBER_PIVOT_ID, MotorType.kBrushless);
     m_pidController = m_motor.getPIDController();
+    pivot_pidController = pivot_motor.getPIDController();
     kP = 0.01; kI = 0; kD = 1; kIz = 0; kFF = 0; kMaxOutput = 1; kMinOutput = -1; // PID parameters
     m_pidController.setP(kP);
     m_pidController.setI(kI);
@@ -33,6 +39,13 @@ public class ArmSubsystem extends SubsystemBase {
     m_pidController.setFF(kFF);
     m_pidController.setOutputRange(kMinOutput, kMaxOutput);  
     m_encoder = m_motor.getEncoder();
+    pivot_pidController.setP(kP);
+    pivot_pidController.setI(kI);
+    pivot_pidController.setD(kD);
+    pivot_pidController.setIZone(kIz);
+    pivot_pidController.setFF(kFF);
+    pivot_pidController.setOutputRange(kMinOutput, kMaxOutput);
+    pivot_encoder = pivot_motor.getEncoder(); // might need to change to alternate encoder
     setZero();
   }
 
@@ -43,6 +56,10 @@ public class ArmSubsystem extends SubsystemBase {
     System.out.println("////////// zeroPos: " + m_zeroPos + "rotationsToGo: " + rotationsToGo);
   }
 
+  public void goToPositionRotations(double distance) {
+    pivot_pidController.setReference(distance, CANSparkMax.ControlType.kPosition);
+  }
+
   public void setZero() {
     m_zeroPos = m_encoder.getPosition();
   }
@@ -51,12 +68,24 @@ public class ArmSubsystem extends SubsystemBase {
     return rotationsToInches(m_encoder.getPosition());
   }
 
+  public double getPositionRotations() {
+    return pivot_encoder.getPosition();
+  }
+
   private double rotationsToInches(double rotations) {
     return (rotations * m_inchPerRot) / gearRatio;
   }
 
   private double inchesToRotations(double inches) {
     return inches / m_inchPerRot * gearRatio;
+  }
+
+  public double getCurrentDrawArm(){
+    return m_motor.getOutputCurrent();
+  }
+
+  public double getCurrentDrawPivot(){
+    return pivot_motor.getOutputCurrent();
   }
 
   @Override
